@@ -2,6 +2,7 @@ package co.istad.elearning.features.category;
 
 import co.istad.elearning.domain.Category;
 import co.istad.elearning.features.category.dto.CategoryCreateRequest;
+import co.istad.elearning.features.category.dto.CategoryPopularDTO;
 import co.istad.elearning.features.category.dto.CategoryResponse;
 import co.istad.elearning.features.category.dto.CategoryUpdateRequest;
 
@@ -19,6 +20,8 @@ public interface CategoryService {
     CategoryResponse getCategoryById(String id);
 
     void updateCategory(String id, CategoryUpdateRequest categoryUpdateRequest);
+
+    List<CategoryPopularDTO> getAllPopularDTOs();
 
 
 }

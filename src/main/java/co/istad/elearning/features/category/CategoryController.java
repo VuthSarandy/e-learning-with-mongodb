@@ -2,6 +2,7 @@ package co.istad.elearning.features.category;
 
 import co.istad.elearning.domain.Category;
 import co.istad.elearning.features.category.dto.CategoryCreateRequest;
+import co.istad.elearning.features.category.dto.CategoryPopularDTO;
 import co.istad.elearning.features.category.dto.CategoryResponse;
 import co.istad.elearning.features.category.dto.CategoryUpdateRequest;
 import jakarta.validation.Valid;
@@ -56,6 +57,11 @@ public class CategoryController {
     @PutMapping("/{id}")
     void updateCategory(@PathVariable String id, @Valid @RequestBody CategoryUpdateRequest categoryUpdateRequest){
         categoryService.updateCategory(id, categoryUpdateRequest);
+    }
+
+    @GetMapping("/popular")
+    List<CategoryPopularDTO> getAllPopularDTOSs(){
+        return categoryService.getAllPopularDTOs();
     }
 
 

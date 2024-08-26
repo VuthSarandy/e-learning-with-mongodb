@@ -2,8 +2,10 @@ package co.istad.elearning.features.category;
 
 import co.istad.elearning.domain.Category;
 import co.istad.elearning.features.category.dto.CategoryCreateRequest;
+import co.istad.elearning.features.category.dto.CategoryPopularDTO;
 import co.istad.elearning.features.category.dto.CategoryResponse;
 import co.istad.elearning.features.category.dto.CategoryUpdateRequest;
+import co.istad.elearning.features.course.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,12 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+
+    private final CourseRepository courseRepository;
 
     @Override
     public void create(CategoryCreateRequest categoryCreateRequest) {
@@ -107,6 +113,27 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(categoryUpdateRequest.name());
         categoryRepository.save(category);
 
+    }
+
+    @Override
+    public List<CategoryPopularDTO> getAllPopularDTOs() {
+
+        List<Category> categories = categoryRepository.findAll();
+
+        Map<String, Long> categoryCourseCount = categories.stream()
+                .collect(Collectors.toMap(
+                        Category::getName,
+                        category ->(long) courseRepository.findAllByCategoryNameAndIsDeletedIsFalse(category.getName()).size()
+                ));
+        return categories.stream()
+                .map(category -> new CategoryPopularDTO(
+                        category.getId(),
+                        category.getName(),
+                        category.getIcon(),
+                        categoryCourseCount.getOrDefault(category.getName(), 0L).intValue()
+                ))
+               .sorted((c1, c2) -> c2.totalCourse().compareTo(c1.totalCourse()))
+                .collect(Collectors.toList());
     }
 
 
