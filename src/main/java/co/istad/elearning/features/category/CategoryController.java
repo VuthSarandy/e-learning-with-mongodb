@@ -8,6 +8,7 @@ import co.istad.elearning.features.category.dto.CategoryUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasAuthority('SCOPE_openid')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     void createCategory(@Valid @RequestBody CategoryCreateRequest categoryCreateRequest){
